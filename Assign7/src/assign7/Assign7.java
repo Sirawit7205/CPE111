@@ -9,20 +9,36 @@ public class Assign7 {
     ArrayList<DictNode> dict = new ArrayList<>();
     
     public static void main(String[] args) {
-        int wordCount,remCount;
+        int wordCount,remCount,locIndex,locLength;
+        String query = new String();
+        Scanner input = new Scanner(System.in);
         Assign7 mainMethod = new Assign7();
         DictNode dataNode = new DictNode();
         //DictNode structMethod = new DictNode();
         
         wordCount = mainMethod.readFile("utf8lexitron.csv");
         System.out.println("Total input: " + wordCount + " records.");
-        Collections.sort(mainMethod.dict);
+        Collections.sort(mainMethod.dict, DictNode.compareByAllFields);
         remCount = mainMethod.removeDuplicate();
         System.out.println("Total duplicate found: " + remCount + " records.");
         System.out.println("Total remaining size: " + mainMethod.dict.size() + " records.");
         mainMethod.printMostMeaning();
-        //for(int i=0;i<mainMethod.dict.size();i++)
-        //    System.out.println(i + " " + mainMethod.dict.get(i).word + " " + mainMethod.dict.get(i).meaning + " " + mainMethod.dict.get(i).type);
+        
+        while(query.compareToIgnoreCase("end")!=0)
+        {
+            System.out.println("Enter word: ");
+            query = input.nextLine();
+
+            locIndex = Collections.binarySearch(mainMethod.dict, new DictNode(query,"",""), DictNode.compareByWord);
+            if(locIndex<0)
+                System.out.println("Word "+ query + " not found.");
+            else
+                mainMethod.printAllMeaning(locIndex);
+        }
+        
+        input.close();
+        System.out.println("End program.");
+        System.out.println("Program written by 60070501064 Sirawit Lappisatepun");
     }
     
     private int readFile(String filename)
@@ -51,6 +67,7 @@ public class Assign7 {
                 wordCount++;
             }
             
+            in.close();
         }
         catch(FileNotFoundException e) {
            System.out.println("File not found."); 
@@ -67,7 +84,7 @@ public class Assign7 {
         
         while(i<dict.size()-1)
         {
-            if(dict.get(i).compareTo(dict.get(i+1))==0)
+            if(dict.get(i).compareAllFields(dict.get(i+1))==0)
             {
                 dict.remove(i+1);
                 removeCount++;
@@ -101,6 +118,19 @@ public class Assign7 {
         
         System.out.println("Maximum meaning word " + dict.get(maxLocation).word + " have " + maxCount + " meaning.");
         printDataInRange(maxLocation,maxCount);
+    }
+    
+    private void printAllMeaning(int startIndex)
+    {
+        int left=startIndex, count=0;
+        
+        while(left>0&&dict.get(left-1).word.compareToIgnoreCase(dict.get(startIndex).word)==0)
+            left--;
+        while(left+count<dict.size()&&dict.get(left+count).word.compareToIgnoreCase(dict.get(startIndex).word)==0)
+            count++;
+        
+        System.out.println("Found " + dict.get(startIndex).word + " " + count + " times at " + left + " - " + (left+count-1));
+        printDataInRange(left,count);
     }
     
     private void printDataInRange(int startIndex, int length)
