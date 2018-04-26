@@ -79,7 +79,7 @@ public class Assign9 {
         System.out.println("Total input: " + wordCount + " records.");                                      //print word count
         System.out.println("Total duplicate found: " + duplicateCount + " records.");                       //print duplicate count
         System.out.println("Total remaining size: " + (wordCount - duplicateCount) + " records.");     //print remaining size
-        System.out.println("Total remaining tree size: " + dict.size() + " records.");                      //print remaining size
+        System.out.println("Total remaining hash size: " + dict.size() + " records.");                      //print remaining size
     }
     
     //method for inserting node to HashMap
